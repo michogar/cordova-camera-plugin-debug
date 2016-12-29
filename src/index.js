@@ -1,10 +1,10 @@
 export default class Dummy {
 
   constructor() {
-    this._iAmDumb = true
+    this.iAmDumb = true
   }
 
   get AmIDumb() {
-    return this._iAmDumb
+    return this.iAmDumb
   }
 }

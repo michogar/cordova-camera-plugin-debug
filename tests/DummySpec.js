@@ -6,9 +6,7 @@ import Dummy from '../src'
 
 describe('Dummy', () => {
   it('should be dumb', () => {
-    let dummy = new Dummy()
+    const dummy = new Dummy()
     expect(dummy.AmIDumb).toBeTruthy()
-  });
-});
-
-
+  })
+})

@@ -10,6 +10,9 @@ module.exports = function(config) {
     webpack: { //kind of a copy of your webpack config
       devtool: 'inline-source-map', //just do inline source maps instead of the default
       module: {
+        preLoaders: [
+          {test: /\.js?$/, loader: 'eslint-loader', exclude: /node_modules/}
+        ],
         loaders: [
           { test: /\.js$/, loader: 'babel-loader' }
         ],
