@@ -4,7 +4,6 @@
 
 import Camera from '../src/camera'
 
-
 describe('Camera', () => {
   it('should not instantiate without media', () => {
     let camera
@@ -22,8 +21,8 @@ describe('Camera', () => {
   })
 
   const camera = new Camera()
-  it('should show dialog with camera', () => {
-    camera.showCamera().then((done) => {
+  it('should show dialog with camera', (done) => {
+    camera.showCamera().then(() => {
       const video = document.getElementById('video')
       expect(video).not.toBeNull()
       expect(video.getAttribute('id')).toBe('video')
@@ -37,25 +36,53 @@ describe('Camera', () => {
       expect(canvas).not.toBeNull()
       expect(canvas.getAttribute('id')).toBe('canvas')
       done()
-    }).catch((done) => {
+    }).catch(() => {
       expect(true).toBeFalsy()
       done()
     })
   })
 
-  it('should remove dialog with camera', () => {
-    camera.showCamera().then((done) => {
-      camera.removeCamera()
+  it('should get encoding in mimetype way', () => {
+    expect(Camera.getEncodingType(Camera.EncodingType.JPEG)).toBe('image/jpeg')
+    expect(Camera.getEncodingType(Camera.EncodingType.PNG)).toBe('image/png')
+    let encoding = null
+    try {
+      const NO_ENCODING_TYPE = 3
+      encoding = Camera.getEncodingType(NO_ENCODING_TYPE)
+    } catch (err) {
+      expect(err.message).toBe('Not encoding allowed')
+      expect(encoding).toBeNull()
+    }
+  })
 
-      const video = document.getElementById('video')
-      expect(video).toBeNull()
-
-      const snap = document.getElementById('snap')
-      expect(snap).toBeNull()
-
-      const canvas = document.getElementById('canvas')
-      expect(canvas).toBeNull()
-      done()
+  it('should get a picture from camera', () => {
+    const canvas = document.getElementById('canvas')
+    spyOn(canvas, 'toBlob')
+    spyOn(canvas, 'toDataURL')
+    camera.getPictureFromCamera({
+      sourceType: Camera.PictureSourceType.CAMERA,
+      destinationType: Camera.DestinationType.FILE_URI,
+      quality: 50
     })
+    expect(canvas.toBlob).toHaveBeenCalled()
+
+    camera.getPictureFromCamera({
+      sourceType: Camera.PictureSourceType.CAMERA,
+      destinationType: Camera.DestinationType.DATA_URL,
+      quality: 50
+    })
+    expect(canvas.toDataURL).toHaveBeenCalled()
+  })
+
+  it('should remove dialog with camera', (done) => {
+    camera.removeCamera()
+
+    const video = document.getElementById('video')
+    expect(video).toBeNull()
+    const snap = document.getElementById('snap')
+    expect(snap).toBeNull()
+    const canvas = document.getElementById('canvas')
+    expect(canvas).toBeNull()
+    done()
   })
 })
