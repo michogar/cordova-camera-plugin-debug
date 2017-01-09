@@ -37,6 +37,8 @@ class Camera {
     if (!navigator.camera) {
       if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
         throw new Error('No Media devices available!!')
+      } else {
+        navigator.camera = this
       }
     }
   }
