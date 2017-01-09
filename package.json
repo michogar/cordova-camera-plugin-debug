@@ -6,7 +6,7 @@
   "scripts": {
     "test": "karma start",
     "start": "webpack-dev-server --config webpack.config.dev.js -d --inline",
-    "build": "webpack --config webpack.config.prod.js",
+    "build": "webpack --config webpack.config.prod.js && webpack --config webpack.config.min.prod.js",
     "lint": "eslint src"
   },
   "keywords": [

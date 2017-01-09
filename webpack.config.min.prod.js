@@ -10,7 +10,7 @@ module.exports = {
   ],
   output: {
     path: outputPath,
-    filename: 'bundle.js',
+    filename: 'bundle.min.js',
     library: 'cordova-camera-plugin-debug',
     libraryTarget: 'umd'
   },
@@ -22,6 +22,11 @@ module.exports = {
         loaders: ['babel']
       }
     ]
-  }
+  },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      minimize: true
+    })
+  ]
 };
-
