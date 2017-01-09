@@ -5,17 +5,17 @@
 import Camera from '../src/'
 
 describe('Camera', () => {
-
   beforeEach(() => {
-      new Camera()
+    new Camera()
   })
 
   it('should not instantiate without media', () => {
+    let camera
     navigator.camera = undefined
-    new Camera()
+    camera = new Camera()
     expect(navigator.camera).toBeDefined()
 
-    let camera = undefined
+    camera = undefined
     try {
       camera = new Camera()
     } catch (error) {
