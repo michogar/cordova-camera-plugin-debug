@@ -10,7 +10,9 @@ module.exports = {
   ],
   output: {
     path: outputPath,
-    filename: 'bundle.js'
+    filename: 'bundle.js',
+    library: 'cordova-camera-plugin-debug',
+    libraryTarget: 'umd'
   },
   module: {
     loaders: [

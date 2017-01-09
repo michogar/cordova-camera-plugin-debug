@@ -4,27 +4,29 @@ var entryPath = path.join(__dirname, 'src'),
 var webpack = require('webpack')
 
 module.exports = {
-    devtool: 'source-map',
-    entry: [
-        path.join(entryPath, 'index.js')
-    ],
-    output: {
-        path: outputPath,
-        filename: 'bundle.min.js'
-    },
-    module: {
-        loaders: [
-            {
-                test: /\.js$/,
-                include: entryPath,
-                loaders: ['babel']
-            }
-        ]
-    },
-    plugins: [
-        new webpack.optimize.UglifyJsPlugin({
-            include: /\.min\.js$/,
-            minimize: true
-        })
+  devtool: 'source-map',
+  entry: [
+    path.join(entryPath, 'index.js')
+  ],
+  output: {
+    path: outputPath,
+    filename: 'bundle.min.js',
+    library: 'cordova-camera-plugin-debug',
+    libraryTarget: 'umd'
+  },
+  module: {
+    loaders: [
+      {
+        test: /\.js$/,
+        include: entryPath,
+        loaders: ['babel']
+      }
     ]
+  },
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      minimize: true
+    })
+  ]
 };
