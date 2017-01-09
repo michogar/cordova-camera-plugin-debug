@@ -5,13 +5,17 @@
 import Camera from '../src/'
 
 describe('Camera', () => {
-  it('should not instantiate without media', () => {
-    let camera
-    navigator.camera = {}
-    camera = new Camera()
-    expect(camera).toBeDefined()
 
-    camera = undefined
+  beforeEach(() => {
+      new Camera()
+  })
+
+  it('should not instantiate without media', () => {
+    navigator.camera = undefined
+    new Camera()
+    expect(navigator.camera).toBeDefined()
+
+    let camera = undefined
     try {
       camera = new Camera()
     } catch (error) {
@@ -20,9 +24,8 @@ describe('Camera', () => {
     expect(camera).toBeDefined()
   })
 
-  const camera = new Camera()
   it('should show dialog with camera', (done) => {
-    camera.showCamera().then(() => {
+    navigator.camera.showCamera().then(() => {
       const video = document.getElementById('video')
       expect(video).not.toBeNull()
       expect(video.getAttribute('id')).toBe('video')
@@ -59,14 +62,14 @@ describe('Camera', () => {
     const canvas = document.getElementById('canvas')
     spyOn(canvas, 'toBlob')
     spyOn(canvas, 'toDataURL')
-    camera.getPictureFromCamera({
+    navigator.camera.getPictureFromCamera({
       sourceType: Camera.PictureSourceType.CAMERA,
       destinationType: Camera.DestinationType.FILE_URI,
       quality: 50
     })
     expect(canvas.toBlob).toHaveBeenCalled()
 
-    camera.getPictureFromCamera({
+    navigator.camera.getPictureFromCamera({
       sourceType: Camera.PictureSourceType.CAMERA,
       destinationType: Camera.DestinationType.DATA_URL,
       quality: 50
@@ -75,7 +78,7 @@ describe('Camera', () => {
   })
 
   it('should remove dialog with camera', (done) => {
-    camera.removeCamera()
+    navigator.camera.removeCamera()
 
     const video = document.getElementById('video')
     expect(video).toBeNull()
