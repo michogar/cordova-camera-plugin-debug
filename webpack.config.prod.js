@@ -10,7 +10,7 @@ module.exports = {
   ],
   output: {
     path: outputPath,
-    filename: 'bundle.min.js'
+    filename: 'bundle.js'
   },
   module: {
     loaders: [
@@ -20,12 +20,6 @@ module.exports = {
         loaders: ['babel']
       }
     ]
-  },
-  plugins: [
-    new webpack.optimize.UglifyJsPlugin({
-      include: /\.min\.js$/,
-      minimize: true
-    })
-  ]
+  }
 };
 
