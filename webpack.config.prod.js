@@ -1,6 +1,7 @@
 var path = require('path');
 var entryPath = path.join(__dirname, 'src'),
   outputPath = path.join(__dirname, 'dist');
+var webpack = require('webpack')
 
 module.exports = {
   devtool: 'source-map',
@@ -9,7 +10,7 @@ module.exports = {
   ],
   output: {
     path: outputPath,
-    filename: 'bundle.js'
+    filename: 'bundle.min.js'
   },
   module: {
     loaders: [
@@ -20,8 +21,11 @@ module.exports = {
       }
     ]
   },
-  devServer: {
-    contentBase: outputPath
-  }
+  plugins: [
+    new webpack.optimize.UglifyJsPlugin({
+      include: /\.min\.js$/,
+      minimize: true
+    })
+  ]
 };
 

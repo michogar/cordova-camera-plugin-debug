@@ -2,7 +2,7 @@
  * Created by michogarcia on 29/12/16.
  */
 
-import Camera from '../src/camera'
+import Camera from '../src/'
 
 describe('Camera', () => {
   it('should not instantiate without media', () => {
