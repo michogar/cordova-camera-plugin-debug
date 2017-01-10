@@ -16,11 +16,8 @@ module.exports = {
   },
   module: {
     loaders: [
-      {
-        test: /\.js$/,
-        include: entryPath,
-        loaders: ['babel']
-      }
+      { test: /\.js$/, include: entryPath, loaders: ['babel'] },
+      { test: /\.css$/, loader: "style-loader!css-loader" }
     ]
   },
   plugins: [

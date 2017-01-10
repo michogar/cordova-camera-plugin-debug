@@ -14,7 +14,8 @@ module.exports = function(config) {
           {test: /\.js?$/, loader: 'eslint-loader', exclude: /node_modules/}
         ],
         loaders: [
-          { test: /\.js$/, loader: 'babel-loader' }
+          { test: /\.js$/, loader: 'babel-loader' },
+          { test: /\.css$/, loader: "style-loader!css-loader" }
         ],
         postLoaders: [ { //delays coverage til after tests are run, fixing transpiled source coverage error
           test: /\.js$/,
