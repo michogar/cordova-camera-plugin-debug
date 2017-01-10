@@ -29,7 +29,7 @@ describe('Camera', () => {
       const video = document.getElementById('video')
       expect(video).not.toBeNull()
       expect(video.getAttribute('id')).toBe('video')
-      expect(video.getAttribute('width')).toBe('640')
+      expect(video.getAttribute('width')).toBe('400')
 
       const snap = document.getElementById('snap')
       expect(snap).not.toBeNull()
