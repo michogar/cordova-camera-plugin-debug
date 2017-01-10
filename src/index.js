@@ -86,9 +86,9 @@ class Camera {
 
   removeCamera() {
     this.video.pause()
-    document.body.removeChild(this.video)
-    document.body.removeChild(this.snap)
-    document.body.removeChild(this.canvas)
+    this.video.parentNode.removeChild(this.video)
+    this.snap.parentNode.removeChild(this.snap)
+    this.canvas.parentNode.removeChild(this.canvas)
   }
 
   getPictureFromCamera({ destinationType = Camera.DestinationType.DATA_URL,
