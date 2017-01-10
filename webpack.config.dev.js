@@ -17,7 +17,8 @@ module.exports = {
       { test: /\.js?$/, loader: 'eslint-loader', exclude: /node_modules/ }
     ],
     loaders: [
-      { test: /\.js$/, include: entryPath, loaders: ['babel'] }
+      { test: /\.js$/, include: entryPath, loaders: ['babel'] },
+      { test: /\.css$/, loader: "style-loader!css-loader" }
     ]
   },
   devServer: {
