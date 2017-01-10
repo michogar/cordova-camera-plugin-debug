@@ -1,6 +1,13 @@
 /**
  * Created by michogarcia on 29/12/16.
  */
+import vex from 'vex-js'
+import vexDialog from 'vex-dialog'
+import '../node_modules/vex-js/dist/css/vex.css'
+import '../node_modules/vex-js/dist/css/vex-theme-top.css'
+
+vex.registerPlugin(vexDialog)
+vex.defaultOptions.className = 'vex-theme-top'
 
 class Camera {
 
@@ -45,33 +52,28 @@ class Camera {
 
   showCamera() {
     return new Promise((resolve, reject) => {
+      vex.dialog.open({
+        message: '',
+        input: [
+          '<div class="vex-custom-field-wrapper">',
+          '<video id="video" width="400" height="400" autoplay="true"></video>',
+          '</div>',
+          '<div class="vex-custom-field-wrapper">',
+          '<button id="snap">Snap Photo</button>',
+          '</div>',
+          '<div class="vex-custom-field-wrapper">',
+          '<canvas id="canvas" width="400" height="400"></canvas>',
+          '</div>'
+        ].join(''),
+        overlayClosesOnClick: false,
+        showCloseButton: false,
+        escapeButtonCloses: false
+      })
+
       navigator.mediaDevices.getUserMedia({ video: true }).then((stream) => {
-        if (document.getElementById('video')) {
-          this.video = document.getElementById('video')
-          this.snap = document.getElementById('snap')
-          this.canvas = document.getElementById('canvas')
-          resolve()
-          return
-        }
-        this.video = document.createElement('video')
-        this.video.setAttribute('id', 'video')
-        this.video.setAttribute('width', '640')
-        this.video.setAttribute('height', '480')
-        this.video.setAttribute('autoplay', true)
-
-        this.snap = document.createElement('button')
-        this.snap.setAttribute('id', 'snap')
-        this.snap.appendChild(document.createTextNode('Snap Photo'))
-
-        this.canvas = document.createElement('canvas')
-        this.canvas.setAttribute('id', 'canvas')
-        this.canvas.setAttribute('width', '640')
-        this.canvas.setAttribute('height', '480')
-
-        document.body.appendChild(this.video)
-        document.body.appendChild(this.snap)
-        document.body.appendChild(this.canvas)
-
+        this.video = document.getElementById('video')
+        this.snap = document.getElementById('snap')
+        this.canvas = document.getElementById('canvas')
         this.video.src = window.URL.createObjectURL(stream)
         this.video.play()
         resolve()
@@ -93,7 +95,7 @@ class Camera {
     encodingType = Camera.EncodingType.JPEG, quality = 50 } = {}) {
     return new Promise((resolve, reject) => {
       const context = this.canvas.getContext('2d')
-      context.drawImage(this.video, 0, 0, 640, 480)
+      context.drawImage(this.video, 0, 0, 400, 400)
       const encoding = Camera.getEncodingType(encodingType)
       if (destinationType === Camera.DestinationType.FILE_URI) {
         this.canvas.toBlob((blob) => {
@@ -113,7 +115,8 @@ class Camera {
     quality = 50 } = {}) {
     if (sourceType === Camera.PictureSourceType.CAMERA) {
       this.showCamera().then(() => {
-        this.snap.addEventListener('click', () => {
+        this.snap.addEventListener('click', (evt) => {
+          evt.preventDefault()
           this.getPictureFromCamera({ destinationType, encodingType, quality }).then((picture) => {
             successCallback(picture)
           }).catch(errorCallback)
