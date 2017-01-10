@@ -2,7 +2,7 @@
   "name": "cordova-camera-plugin-debug",
   "version": "0.1.0",
   "description": "Camera wrapper to navigator with debug cordova-camera-plugin in browser",
-  "main": "src/index.js",
+  "main": "dist/bundle.js",
   "scripts": {
     "test": "karma start",
     "start": "webpack-dev-server --config webpack.config.dev.js -d --inline",
