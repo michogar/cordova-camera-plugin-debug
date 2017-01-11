@@ -147,9 +147,31 @@ return /******/ (function(modules) { // webpackBootstrap
 	    key: 'removeCamera',
 	    value: function removeCamera() {
 	      this.video.pause();
-	      document.body.removeChild(this.video);
-	      document.body.removeChild(this.snap);
-	      document.body.removeChild(this.canvas);
+	      this.video.parentNode.removeChild(this.video);
+	      this.snap.parentNode.removeChild(this.snap);
+	      this.canvas.parentNode.removeChild(this.canvas);
+	    }
+	  }, {
+	    key: 'saveFile',
+	    value: function saveFile(blob, encoding) {
+	      var URL = window.URL || window.webkitURL;
+	      var extension = encoding.split('/').pop();
+	      var name = URL.createObjectURL(blob).split('/').pop() + '.' + extension;
+	      var file = new File([blob], name);
+	
+	      return new Promise(function (resolve, reject) {
+	        (window.requestFileSystem || window.webkitRequestFileSystem)(window.TEMPORARY, 10 * 1024 * 1024, function (fs) {
+	          fs.root.getFile(file.name, { create: true }, function (fileEntry) {
+	            fileEntry.createWriter(function (fileWriter) {
+	              fileWriter.onwriteend = function () {
+	                resolve(fileEntry.toURL());
+	              };
+	              fileWriter.onerror = reject;
+	              fileWriter.write(blob);
+	            }, reject);
+	          }, reject);
+	        }, reject);
+	      });
 	    }
 	  }, {
 	    key: 'getPictureFromCamera',
@@ -170,8 +192,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	        var encoding = Camera.getEncodingType(encodingType);
 	        if (destinationType === Camera.DestinationType.FILE_URI) {
 	          _this2.canvas.toBlob(function (blob) {
-	            var URL = window.URL || window.webkitURL;
-	            resolve(URL.createObjectURL(blob));
+	            _this2.saveFile(blob, encoding).then(resolve).catch(reject);
 	          }, encoding, quality / 100);
 	        } else if (destinationType === Camera.DestinationType.DATA_URL) {
 	          resolve(_this2.canvas.toDataURL(encoding));
