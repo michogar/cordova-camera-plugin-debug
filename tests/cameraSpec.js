@@ -24,6 +24,23 @@ describe('Camera', () => {
     expect(camera).toBeDefined()
   })
 
+  it('should save blob as file after its creation', (done) => {
+    const encoding = 'image/jpeg'
+    const blob = new Blob([], {type: encoding})
+
+    navigator.camera.saveFile(blob, encoding).then((uri) => {
+      window.resolveLocalFileSystemURL = window.resolveLocalFileSystemURL || window.webkitResolveLocalFileSystemURL;
+      window.resolveLocalFileSystemURL(uri, function(fileEntry) {
+        const savedURL = fileEntry.toURL()
+        expect(uri).toEqual(savedURL)
+        fileEntry.remove(() => {
+          console.info('Dummy file removed!!')
+        }, fail)
+        done()
+      }, fail);
+    }).catch(fail)
+  })
+
   it('should show dialog with camera', (done) => {
     navigator.camera.showCamera().then(() => {
       const video = document.getElementById('video')
