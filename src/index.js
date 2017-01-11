@@ -91,6 +91,28 @@ class Camera {
     this.canvas.parentNode.removeChild(this.canvas)
   }
 
+  saveFile(blob, encoding) {
+    const URL = window.URL || window.webkitURL
+    const extension = encoding.split('/').pop()
+    const name = `${URL.createObjectURL(blob).split('/').pop()}.${extension}`
+    const file = new File([blob], name)
+
+    return new Promise((resolve, reject) => {
+      (window.requestFileSystem || window.webkitRequestFileSystem)(window.TEMPORARY, 10 * 1024 * 1024,
+        (fs) => {
+          fs.root.getFile(file.name, { create: true }, (fileEntry) => {
+            fileEntry.createWriter((fileWriter) => {
+              fileWriter.onwriteend = () => {
+                resolve(fileEntry.toURL())
+              }
+              fileWriter.onerror = reject
+              fileWriter.write(blob)
+            }, reject)
+          }, reject)
+        }, reject)
+    })
+  }
+
   getPictureFromCamera({ destinationType = Camera.DestinationType.DATA_URL,
     encodingType = Camera.EncodingType.JPEG, quality = 50 } = {}) {
     return new Promise((resolve, reject) => {
@@ -99,8 +121,7 @@ class Camera {
       const encoding = Camera.getEncodingType(encodingType)
       if (destinationType === Camera.DestinationType.FILE_URI) {
         this.canvas.toBlob((blob) => {
-          const URL = window.URL || window.webkitURL
-          resolve(URL.createObjectURL(blob))
+          this.saveFile(blob, encoding).then(resolve).catch(reject)
         }, encoding, quality / 100)
       } else if (destinationType === Camera.DestinationType.DATA_URL) {
         resolve(this.canvas.toDataURL(encoding))
