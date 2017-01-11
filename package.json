@@ -1,6 +1,6 @@
 {
   "name": "cordova-camera-plugin-debug",
-  "version": "0.1.0",
+  "version": "0.3.0",
   "description": "Camera wrapper to navigator with debug cordova-camera-plugin in browser",
   "main": "dist/bundle.js",
   "scripts": {
