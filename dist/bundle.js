@@ -52,14 +52,14 @@ return /******/ (function(modules) { // webpackBootstrap
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__(1);
 
 
-/***/ },
+/***/ }),
 /* 1 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
@@ -248,9 +248,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 	exports.default = Camera;
 
-/***/ },
+/***/ }),
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var require;var require;(function(f){if(true){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.vex = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 	/*
@@ -953,8 +953,13 @@ return /******/ (function(modules) { // webpackBootstrap
 	    isEscapeActive = false
 	  }
 	})
+	
 	// Close all vexes on history pop state (useful in single page apps)
-	window.addEventListener('popstate', vex.closeAll)
+	window.addEventListener('popstate', function () {
+	  if (vex.defaultOptions.closeAllOnPopState) {
+	    vex.closeAll()
+	  }
+	})
 	
 	vex.defaultOptions = {
 	  content: '',
@@ -965,7 +970,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	  className: '',
 	  overlayClassName: '',
 	  contentClassName: '',
-	  closeClassName: ''
+	  closeClassName: '',
+	  closeAllOnPopState: true
 	}
 	
 	// TODO Loading symbols?
@@ -993,9 +999,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	},{"classlist-polyfill":1,"domify":2,"es6-object-assign":3}]},{},[4])(4)
 	});
 
-/***/ },
+/***/ }),
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	var require;var require;(function(f){if(true){module.exports=f()}else if(typeof define==="function"&&define.amd){define([],f)}else{var g;if(typeof window!=="undefined"){g=window}else if(typeof global!=="undefined"){g=global}else if(typeof self!=="undefined"){g=self}else{g=this}g.vexDialog = f()}})(function(){var define,module,exports;return (function e(t,n,r){function s(o,u){if(!n[o]){if(!t[o]){var a=typeof require=="function"&&require;if(!u&&a)return require(o,!0);if(i)return i(o,!0);var f=new Error("Cannot find module '"+o+"'");throw f.code="MODULE_NOT_FOUND",f}var l=n[o]={exports:{}};t[o][0].call(l.exports,function(e){var n=t[o][1][e];return s(n?n:e)},l,l.exports,e,t,n,r)}return n[o].exports}var i=typeof require=="function"&&require;for(var o=0;o<r.length;o++)s(r[o]);return s})({1:[function(require,module,exports){
 	
@@ -1406,7 +1412,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	    var domButton = document.createElement('button')
 	    domButton.type = button.type
 	    domButton.textContent = button.text
-	    domButton.classList.add(button.className)
+	    domButton.className = button.className
 	    domButton.classList.add('vex-dialog-button')
 	    if (i === 0) {
 	      domButton.classList.add('vex-first')
@@ -1483,7 +1489,7 @@ return /******/ (function(modules) { // webpackBootstrap
 	
 	      // Optionally focus the first input in the form
 	      if (options.focusFirstInput) {
-	        var el = dialogInstance.contentEl.querySelector('button, input, textarea')
+	        var el = dialogInstance.contentEl.querySelector('button, input, select, textarea')
 	        if (el) {
 	          el.focus()
 	        }
@@ -1529,7 +1535,10 @@ return /******/ (function(modules) { // webpackBootstrap
 	      // More closely mimics "window.prompt" in that a single string is returned
 	      var callback = options.callback
 	      options.callback = function promptCallback (value) {
-	        value = value[Object.keys(value)[0]]
+	        if (typeof value === 'object') {
+	          var keys = Object.keys(value)
+	          value = keys.length ? value[keys[0]] : ''
+	        }
 	        callback(value)
 	      }
 	      return this.open(options)
@@ -1600,9 +1609,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	},{"domify":1,"form-serialize":2}]},{},[3])(3)
 	});
 
-/***/ },
+/***/ }),
 /* 4 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
@@ -1616,8 +1625,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../css-loader/index.js!./vex.css", function() {
-				var newContent = require("!!./../../../css-loader/index.js!./vex.css");
+			module.hot.accept("!!../../../css-loader/index.js!./vex.css", function() {
+				var newContent = require("!!../../../css-loader/index.js!./vex.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -1626,9 +1635,9 @@ return /******/ (function(modules) { // webpackBootstrap
 		module.hot.dispose(function() { update(); });
 	}
 
-/***/ },
+/***/ }),
 /* 5 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(6)();
 	// imports
@@ -1640,9 +1649,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	// exports
 
 
-/***/ },
+/***/ }),
 /* 6 */
-/***/ function(module, exports) {
+/***/ (function(module, exports) {
 
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
@@ -1696,9 +1705,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	};
 
 
-/***/ },
+/***/ }),
 /* 7 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	/*
 		MIT License http://www.opensource.org/licenses/mit-license.php
@@ -1713,7 +1722,7 @@ return /******/ (function(modules) { // webpackBootstrap
 			};
 		},
 		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+			return /msie [6-9]\b/.test(self.navigator.userAgent.toLowerCase());
 		}),
 		getHeadElement = memoize(function () {
 			return document.head || document.getElementsByTagName("head")[0];
@@ -1948,9 +1957,9 @@ return /******/ (function(modules) { // webpackBootstrap
 	}
 
 
-/***/ },
+/***/ }),
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
@@ -1964,8 +1973,8 @@ return /******/ (function(modules) { // webpackBootstrap
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../css-loader/index.js!./vex-theme-top.css", function() {
-				var newContent = require("!!./../../../css-loader/index.js!./vex-theme-top.css");
+			module.hot.accept("!!../../../css-loader/index.js!./vex-theme-top.css", function() {
+				var newContent = require("!!../../../css-loader/index.js!./vex-theme-top.css");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -1974,21 +1983,21 @@ return /******/ (function(modules) { // webpackBootstrap
 		module.hot.dispose(function() { update(); });
 	}
 
-/***/ },
+/***/ }),
 /* 9 */
-/***/ function(module, exports, __webpack_require__) {
+/***/ (function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(6)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, "@keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@-webkit-keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@-moz-keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@-ms-keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@-o-keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@-webkit-keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@-moz-keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@-ms-keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@-o-keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n@-webkit-keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n@-moz-keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n@-ms-keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n@-o-keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n.vex.vex-theme-top.vex-closing .vex-content {\n  animation: vex-dropout 0.5s;\n  -webkit-animation: vex-dropout 0.5s;\n  -moz-animation: vex-dropout 0.5s;\n  -ms-animation: vex-dropout 0.5s;\n  -o-animation: vex-dropout 0.5s;\n  -webkit-backface-visibility: hidden; }\n\n.vex.vex-theme-top .vex-content {\n  animation: vex-dropin 0.5s;\n  -webkit-animation: vex-dropin 0.5s;\n  -moz-animation: vex-dropin 0.5s;\n  -ms-animation: vex-dropin 0.5s;\n  -o-animation: vex-dropin 0.5s;\n  -webkit-backface-visibility: hidden; }\n\n.vex.vex-theme-top .vex-content {\n  -moz-border-radius: 0 0 5px 5px;\n  -webkit-border-radius: 0 0 5px 5px;\n  border-radius: 0 0 5px 5px;\n  font-family: \"Helvetica Neue\", sans-serif;\n  background: #f0f0f0;\n  color: #444;\n  padding: 1em;\n  position: relative;\n  margin: 0 auto;\n  max-width: 100%;\n  width: 450px;\n  font-size: 1.1em;\n  line-height: 1.5em; }\n  .vex.vex-theme-top .vex-content h1, .vex.vex-theme-top .vex-content h2, .vex.vex-theme-top .vex-content h3, .vex.vex-theme-top .vex-content h4, .vex.vex-theme-top .vex-content h5, .vex.vex-theme-top .vex-content h6, .vex.vex-theme-top .vex-content p, .vex.vex-theme-top .vex-content ul, .vex.vex-theme-top .vex-content li {\n    color: inherit; }\n\n.vex.vex-theme-top .vex-close {\n  -moz-border-radius: 5px;\n  -webkit-border-radius: 5px;\n  border-radius: 5px;\n  position: absolute;\n  top: 0;\n  right: 0;\n  cursor: pointer; }\n  .vex.vex-theme-top .vex-close:before {\n    -moz-border-radius: 3px;\n    -webkit-border-radius: 3px;\n    border-radius: 3px;\n    position: absolute;\n    content: \"\\D7\";\n    font-size: 26px;\n    font-weight: normal;\n    line-height: 31px;\n    height: 30px;\n    width: 30px;\n    text-align: center;\n    top: 3px;\n    right: 3px;\n    color: #bbb;\n    background: transparent; }\n  .vex.vex-theme-top .vex-close:hover:before, .vex.vex-theme-top .vex-close:active:before {\n    color: #777;\n    background: #e0e0e0; }\n\n.vex.vex-theme-top .vex-dialog-form .vex-dialog-message {\n  margin-bottom: .5em; }\n\n.vex.vex-theme-top .vex-dialog-form .vex-dialog-input {\n  margin-bottom: 1em; }\n  .vex.vex-theme-top .vex-dialog-form .vex-dialog-input textarea, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"date\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"datetime\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"datetime-local\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"email\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"month\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"number\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"password\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"search\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"tel\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"text\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"time\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"url\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"week\"] {\n    -moz-border-radius: 3px;\n    -webkit-border-radius: 3px;\n    border-radius: 3px;\n    background: #fff;\n    width: 100%;\n    padding: .25em .67em;\n    border: 0;\n    font-family: inherit;\n    font-weight: inherit;\n    font-size: inherit;\n    min-height: 2.5em;\n    margin: 0 0 .25em; }\n    .vex.vex-theme-top .vex-dialog-form .vex-dialog-input textarea:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"date\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"datetime\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"datetime-local\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"email\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"month\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"number\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"password\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"search\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"tel\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"text\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"time\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"url\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"week\"]:focus {\n      -moz-box-shadow: inset 0 0 0 2px #8dbdf1;\n      -webkit-box-shadow: inset 0 0 0 2px #8dbdf1;\n      box-shadow: inset 0 0 0 2px #8dbdf1;\n      outline: none; }\n\n.vex.vex-theme-top .vex-dialog-form .vex-dialog-buttons {\n  *zoom: 1; }\n  .vex.vex-theme-top .vex-dialog-form .vex-dialog-buttons:after {\n    content: \"\";\n    display: table;\n    clear: both; }\n\n.vex.vex-theme-top .vex-dialog-button {\n  -moz-border-radius: 3px;\n  -webkit-border-radius: 3px;\n  border-radius: 3px;\n  border: 0;\n  float: right;\n  margin: 0 0 0 .5em;\n  font-family: inherit;\n  text-transform: uppercase;\n  letter-spacing: .1em;\n  font-size: .8em;\n  line-height: 1em;\n  padding: .75em 2em; }\n  .vex.vex-theme-top .vex-dialog-button.vex-last {\n    margin-left: 0; }\n  .vex.vex-theme-top .vex-dialog-button:focus {\n    animation: vex-pulse 1.1s infinite;\n    -webkit-animation: vex-pulse 1.1s infinite;\n    -moz-animation: vex-pulse 1.1s infinite;\n    -ms-animation: vex-pulse 1.1s infinite;\n    -o-animation: vex-pulse 1.1s infinite;\n    -webkit-backface-visibility: hidden;\n    outline: none; }\n    @media (max-width: 568px) {\n      .vex.vex-theme-top .vex-dialog-button:focus {\n        animation: none;\n        -webkit-animation: none;\n        -moz-animation: none;\n        -ms-animation: none;\n        -o-animation: none;\n        -webkit-backface-visibility: hidden; } }\n  .vex.vex-theme-top .vex-dialog-button.vex-dialog-button-primary {\n    background: #3288e6;\n    color: #fff; }\n  .vex.vex-theme-top .vex-dialog-button.vex-dialog-button-secondary {\n    background: #e0e0e0;\n    color: #777; }\n\n.vex-loading-spinner.vex-theme-top {\n  -moz-box-shadow: 0 0 0 0.5em #f0f0f0, 0 0 1px 0.5em rgba(0, 0, 0, 0.3);\n  -webkit-box-shadow: 0 0 0 0.5em #f0f0f0, 0 0 1px 0.5em rgba(0, 0, 0, 0.3);\n  box-shadow: 0 0 0 0.5em #f0f0f0, 0 0 1px 0.5em rgba(0, 0, 0, 0.3);\n  -moz-border-radius: 100%;\n  -webkit-border-radius: 100%;\n  border-radius: 100%;\n  background: #f0f0f0;\n  border: .2em solid transparent;\n  border-top-color: #bbb;\n  top: -1.1em;\n  bottom: auto; }\n", ""]);
+	exports.push([module.id, "@keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@-webkit-keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@-moz-keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@-ms-keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@-o-keyframes vex-dropin {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 0; }\n  1% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 0; }\n  2% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px);\n    opacity: 1; }\n  100% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0);\n    opacity: 1; } }\n\n@keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@-webkit-keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@-moz-keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@-ms-keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@-o-keyframes vex-dropout {\n  0% {\n    transform: translateY(0);\n    -webkit-transform: translateY(0);\n    -moz-transform: translateY(0);\n    -ms-transform: translateY(0);\n    -o-transform: translateY(0); }\n  100% {\n    transform: translateY(-800px);\n    -webkit-transform: translateY(-800px);\n    -moz-transform: translateY(-800px);\n    -ms-transform: translateY(-800px);\n    -o-transform: translateY(-800px); } }\n\n@keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n@-webkit-keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n@-moz-keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n@-ms-keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n@-o-keyframes vex-pulse {\n  0% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; }\n  70% {\n    -moz-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    -webkit-box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25);\n    box-shadow: inset 0 0 0 300px rgba(255, 255, 255, 0.25); }\n  100% {\n    -moz-box-shadow: inset 0 0 0 300px transparent;\n    -webkit-box-shadow: inset 0 0 0 300px transparent;\n    box-shadow: inset 0 0 0 300px transparent; } }\n\n.vex.vex-theme-top.vex-closing .vex-content {\n  animation: vex-dropout 0.5s;\n  -webkit-animation: vex-dropout 0.5s;\n  -moz-animation: vex-dropout 0.5s;\n  -ms-animation: vex-dropout 0.5s;\n  -o-animation: vex-dropout 0.5s;\n  -webkit-backface-visibility: hidden; }\n\n.vex.vex-theme-top .vex-content {\n  animation: vex-dropin 0.5s;\n  -webkit-animation: vex-dropin 0.5s;\n  -moz-animation: vex-dropin 0.5s;\n  -ms-animation: vex-dropin 0.5s;\n  -o-animation: vex-dropin 0.5s;\n  -webkit-backface-visibility: hidden; }\n\n.vex.vex-theme-top .vex-content {\n  -moz-border-radius: 0 0 5px 5px;\n  -webkit-border-radius: 0 0 5px 5px;\n  border-radius: 0 0 5px 5px;\n  font-family: \"Helvetica Neue\", sans-serif;\n  background: #f0f0f0;\n  color: #444;\n  padding: 1em;\n  position: relative;\n  margin: 0 auto;\n  max-width: 100%;\n  width: 450px;\n  font-size: 1.1em;\n  line-height: 1.5em; }\n  .vex.vex-theme-top .vex-content h1, .vex.vex-theme-top .vex-content h2, .vex.vex-theme-top .vex-content h3, .vex.vex-theme-top .vex-content h4, .vex.vex-theme-top .vex-content h5, .vex.vex-theme-top .vex-content h6, .vex.vex-theme-top .vex-content p, .vex.vex-theme-top .vex-content ul, .vex.vex-theme-top .vex-content li {\n    color: inherit; }\n\n.vex.vex-theme-top .vex-close {\n  -moz-border-radius: 5px;\n  -webkit-border-radius: 5px;\n  border-radius: 5px;\n  position: absolute;\n  top: 0;\n  right: 0;\n  cursor: pointer; }\n  .vex.vex-theme-top .vex-close:before {\n    -moz-border-radius: 3px;\n    -webkit-border-radius: 3px;\n    border-radius: 3px;\n    position: absolute;\n    content: \"\\D7\";\n    font-size: 26px;\n    font-weight: normal;\n    line-height: 31px;\n    height: 30px;\n    width: 30px;\n    text-align: center;\n    top: 3px;\n    right: 3px;\n    color: #bbb;\n    background: transparent; }\n  .vex.vex-theme-top .vex-close:hover:before, .vex.vex-theme-top .vex-close:active:before {\n    color: #777;\n    background: #e0e0e0; }\n\n.vex.vex-theme-top .vex-dialog-form .vex-dialog-message {\n  margin-bottom: .5em; }\n\n.vex.vex-theme-top .vex-dialog-form .vex-dialog-input {\n  margin-bottom: 1em; }\n  .vex.vex-theme-top .vex-dialog-form .vex-dialog-input select, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input textarea, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"date\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"datetime\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"datetime-local\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"email\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"month\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"number\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"password\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"search\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"tel\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"text\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"time\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"url\"], .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"week\"] {\n    -moz-border-radius: 3px;\n    -webkit-border-radius: 3px;\n    border-radius: 3px;\n    background: #fff;\n    width: 100%;\n    padding: .25em .67em;\n    border: 0;\n    font-family: inherit;\n    font-weight: inherit;\n    font-size: inherit;\n    min-height: 2.5em;\n    margin: 0 0 .25em; }\n    .vex.vex-theme-top .vex-dialog-form .vex-dialog-input select:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input textarea:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"date\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"datetime\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"datetime-local\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"email\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"month\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"number\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"password\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"search\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"tel\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"text\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"time\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"url\"]:focus, .vex.vex-theme-top .vex-dialog-form .vex-dialog-input input[type=\"week\"]:focus {\n      -moz-box-shadow: inset 0 0 0 2px #8dbdf1;\n      -webkit-box-shadow: inset 0 0 0 2px #8dbdf1;\n      box-shadow: inset 0 0 0 2px #8dbdf1;\n      outline: none; }\n\n.vex.vex-theme-top .vex-dialog-form .vex-dialog-buttons {\n  *zoom: 1; }\n  .vex.vex-theme-top .vex-dialog-form .vex-dialog-buttons:after {\n    content: \"\";\n    display: table;\n    clear: both; }\n\n.vex.vex-theme-top .vex-dialog-button {\n  -moz-border-radius: 3px;\n  -webkit-border-radius: 3px;\n  border-radius: 3px;\n  border: 0;\n  float: right;\n  margin: 0 0 0 .5em;\n  font-family: inherit;\n  text-transform: uppercase;\n  letter-spacing: .1em;\n  font-size: .8em;\n  line-height: 1em;\n  padding: .75em 2em; }\n  .vex.vex-theme-top .vex-dialog-button.vex-last {\n    margin-left: 0; }\n  .vex.vex-theme-top .vex-dialog-button:focus {\n    animation: vex-pulse 1.1s infinite;\n    -webkit-animation: vex-pulse 1.1s infinite;\n    -moz-animation: vex-pulse 1.1s infinite;\n    -ms-animation: vex-pulse 1.1s infinite;\n    -o-animation: vex-pulse 1.1s infinite;\n    -webkit-backface-visibility: hidden;\n    outline: none; }\n    @media (max-width: 568px) {\n      .vex.vex-theme-top .vex-dialog-button:focus {\n        animation: none;\n        -webkit-animation: none;\n        -moz-animation: none;\n        -ms-animation: none;\n        -o-animation: none;\n        -webkit-backface-visibility: hidden; } }\n  .vex.vex-theme-top .vex-dialog-button.vex-dialog-button-primary {\n    background: #3288e6;\n    color: #fff; }\n  .vex.vex-theme-top .vex-dialog-button.vex-dialog-button-secondary {\n    background: #e0e0e0;\n    color: #777; }\n\n.vex-loading-spinner.vex-theme-top {\n  -moz-box-shadow: 0 0 0 0.5em #f0f0f0, 0 0 1px 0.5em rgba(0, 0, 0, 0.3);\n  -webkit-box-shadow: 0 0 0 0.5em #f0f0f0, 0 0 1px 0.5em rgba(0, 0, 0, 0.3);\n  box-shadow: 0 0 0 0.5em #f0f0f0, 0 0 1px 0.5em rgba(0, 0, 0, 0.3);\n  -moz-border-radius: 100%;\n  -webkit-border-radius: 100%;\n  border-radius: 100%;\n  background: #f0f0f0;\n  border: .2em solid transparent;\n  border-top-color: #bbb;\n  top: -1.1em;\n  bottom: auto; }\n", ""]);
 	
 	// exports
 
 
-/***/ }
+/***/ })
 /******/ ])
 });
 ;
