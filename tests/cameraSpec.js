@@ -1,8 +1,7 @@
 /**
  * Created by michogarcia on 29/12/16.
  */
-
-import Camera from '../src/'
+import Camera from '../src/Camera'
 
 describe('Camera', () => {
   beforeEach(() => {
@@ -26,18 +25,18 @@ describe('Camera', () => {
 
   it('should save blob as file after its creation', (done) => {
     const encoding = 'image/jpeg'
-    const blob = new Blob([], {type: encoding})
+    const blob = new Blob([], { type: encoding })
 
     navigator.camera.saveFile(blob, encoding).then((uri) => {
-      window.resolveLocalFileSystemURL = window.resolveLocalFileSystemURL || window.webkitResolveLocalFileSystemURL;
-      window.resolveLocalFileSystemURL(uri, function(fileEntry) {
+      window.resolveLocalFileSystemURL = window.resolveLocalFileSystemURL || window.webkitResolveLocalFileSystemURL
+      window.resolveLocalFileSystemURL(uri, (fileEntry) => {
         const savedURL = fileEntry.toURL()
         expect(uri).toEqual(savedURL)
         fileEntry.remove(() => {
           console.info('Dummy file removed!!')
         }, fail)
         done()
-      }, fail);
+      }, fail)
     }).catch(fail)
   })
 
