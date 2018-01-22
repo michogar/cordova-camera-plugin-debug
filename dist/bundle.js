@@ -70,8 +70,12 @@ return /******/ (function(modules) { // webpackBootstrap
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	if (!navigator.camera) {
-	  console.warn('Not found camera in navigator, using Camera wrapper instead!!');
-	  new _Camera2.default();
+	  console.info('No camera found as Cordova plugin. Using browser camera instead.');
+	  try {
+	    new _Camera2.default(); // eslint-disable-line no-new
+	  } catch (error) {
+	    console.error('No camera found in browser either. navigator.camera will be undefined!');
+	  }
 	}
 
 /***/ }),
