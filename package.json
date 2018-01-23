@@ -7,6 +7,7 @@
     "test": "karma start",
     "start": "webpack-dev-server --config webpack.config.dev.js -d --inline",
     "build": "webpack --config webpack.config.prod.js && webpack --config webpack.config.min.prod.js",
+    "version": "npx auto-changelog -p && git add CHANGELOG.md",
     "lint": "eslint src"
   },
   "keywords": [
